@@ -1,41 +1,31 @@
 #!/bin/sh
 PATH=/bin:/sbin:/usr/bin:/usr/sbin
 
-# Colors and status helpers
-ESC=$(printf '\033')
-R="${ESC}[1;31m"
-G="${ESC}[1;32m"
-Y="${ESC}[1;33m"
-C="${ESC}[1;36m"
-W="${ESC}[1;37m"
-DIM="${ESC}[2m"
-BOLD="${ESC}[1m"
-RST="${ESC}[0m"
 
-ok()   { printf "%s[  OK  ]%s %s\n" "$G" "$RST" "$1"; }
-warn() { printf "%s[ WARN ]%s %s\n" "$Y" "$RST" "$1"; }
-err()  { printf "%s[ FAIL ]%s %s\n" "$R" "$RST" "$1"; }
-info() { printf "%s[ INFO ]%s %s\n" "$C" "$RST" "$1"; }
-sep()  { printf "%s%s%s\n" "$DIM" "----------------------------------------------------------" "$RST"; }
+ok()   { printf "%s[  OK  ]%s %s\n" "$1"; }
+warn() { printf "%s[ WARN ]%s %s\n" "$1"; }
+err()  { printf "%s[ FAIL ]%s %s\n" "$1"; }
+info() { printf "%s[ INFO ]%s %s\n" "$1"; }
+sep()  { printf "%s%s%s\n" "----------------------------------------------------------"; }
 pause() {
-    printf "\n%s[enter to continue]%s" "$DIM" "$RST"
+    printf "\n%s[enter to continue]%s"
     read -r _dummy
 }
 confirm() {
-    printf "%s%s [y/N]: %s" "$Y" "$1" "$RST"
+    printf "%s%s [y/N]: %s" "$1"
     read -r _a
     [ "$_a" = "y" ] || [ "$_a" = "Y" ]
 }
 
 if [ "$(id -u)" -ne 0 ]; then
-    printf "%snot running as root - privileged commands (gsctool/crossystem) will fail.%s\n" "$Y" "$RST"
-    printf "%scontinuing anyway so you can browse the walkthrough.%s\n" "$DIM" "$RST"
+    printf "%snot running as root - privileged commands (gsctool/crossystem) will fail.%s\n"
+    printf "%scontinuing anyway so you can browse the walkthrough.%s\n"
     sleep 1
 fi
 
 # Logo and step-screen header
 print_logo() {
-    printf "%s" "$C"
+    printf "%s"
     cat <<'LOGO'
   ____  ____
  / ___||  _ \
@@ -43,15 +33,15 @@ print_logo() {
   ___) |  __/
  |____/|_|
 LOGO
-    printf "%s" "$RST"
-    printf "  %sScribble Protection  |  WP Assistant%s\n" "$DIM" "$RST"
+    printf "%s"
+    printf "  %sScribble Protection  |  WP Assistant%s\n"
     sep
 }
 
 step_header() {
     clear 2>/dev/null || printf "\n\n"
     print_logo
-    printf "\n  %s%s%s%s\n\n" "$BOLD" "$W" "$1" "$RST"
+    printf "\n  %s%s%s%s\n\n" "$1"
     sep
     printf "\n"
 }
@@ -65,16 +55,16 @@ numeric_menu() {
     while :; do
         clear 2>/dev/null || printf "\n\n"
         print_logo
-        printf "\n  %s%s%s%s\n\n" "$BOLD" "$W" "$_title" "$RST"
-        printf "  %stype a number and press enter, q to go back%s\n\n" "$DIM" "$RST"
+        printf "\n  %s%s%s%s\n\n" "$_title"
+        printf "  %stype a number and press enter, q to go back%s\n\n"
 
         _i=1
         for _it in "$@"; do
-            printf "  %s%d)%s %s\n" "$BOLD" "$_i" "$RST" "$_it"
+            printf "  %s%d)%s %s\n" "$_i" "$_it"
             _i=$((_i + 1))
         done
         _max=$((_i - 1))
-        printf "\n  %s>%s " "$BOLD" "$RST"
+        printf "\n  %s>%s "
         read -r _ans || { menu_choice=0; return; }
 
         case "$_ans" in
@@ -123,13 +113,13 @@ cr50_battery_disconnect() {
     step_header "CR50 - Battery Disconnect"
     printf "  WP on CR50 is tied to battery presence. Pull the battery,\n"
     printf "  run on AC only, and wpsw_cur drops to 0.\n\n"
-    printf "  %s1.%s Full power off - hold power button until dead.\n\n" "$BOLD" "$RST"
-    printf "  %s2.%s Open the bottom cover.\n\n" "$BOLD" "$RST"
-    printf "  %s3.%s %sDisconnect the battery connector.%s\n" "$BOLD" "$RST" "$R" "$RST"
+    printf "  %s1.%s Full power off - hold power button until dead.\n\n"
+    printf "  %s2.%s Open the bottom cover.\n\n"
+    printf "  %s3.%s %sDisconnect the battery connector.%s\n"
     printf "     Pull straight up, don't yank the wires.\n\n"
-    printf "  %s4.%s Plug in AC power.\n\n" "$BOLD" "$RST"
-    printf "  %s5.%s Boot into VT2 and verify:\n" "$BOLD" "$RST"
-    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n" "$DIM" "$RST" "$G" "$RST"
+    printf "  %s4.%s Plug in AC power.\n\n"
+    printf "  %s5.%s Boot into VT2 and verify:\n"
+    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n"
     sep
     printf "\n"
     warn "Do all flash ops before reconnecting the battery."
@@ -150,21 +140,21 @@ cr50_ccd_suzyq() {
     step_header "CR50 - CCD via SuzyQ"
     printf "  Needs a SuzyQable and a second machine.\n"
     printf "  Debug port is usually the left USB-C, furthest from power.\n\n"
-    printf "  %s1.%s Plug SuzyQ into the debug port.\n\n" "$BOLD" "$RST"
-    printf "  %s2.%s On the host:\n" "$BOLD" "$RST"
-    printf "     %sls /dev/ttyUSB*%s\n" "$DIM" "$RST"
+    printf "  %s1.%s Plug SuzyQ into the debug port.\n\n"
+    printf "  %s2.%s On the host:\n"
+    printf "     %sls /dev/ttyUSB*%s\n"
     printf "     ttyUSB0=AP  ttyUSB1=EC  ttyUSB2=CR50\n\n"
-    printf "  %s3.%s Open CR50 console on host:\n" "$BOLD" "$RST"
-    printf "     %sminicom -D /dev/ttyUSB2 -b 115200%s\n\n" "$DIM" "$RST"
-    printf "  %s4.%s In CR50 console:\n" "$BOLD" "$RST"
-    printf "     %sccd%s             check current state\n" "$DIM" "$RST"
-    printf "     %sccd open%s        start 5min PP window\n\n" "$DIM" "$RST"
-    printf "  %s5.%s Press power button on target when CR50 asks.\n\n" "$BOLD" "$RST"
-    printf "  %s6.%s After open:\n" "$BOLD" "$RST"
-    printf "     %swp disable atboot%s    persists across reboots\n" "$DIM" "$RST"
-    printf "     %swp disable%s           current session only\n\n" "$DIM" "$RST"
-    printf "  %s7.%s Verify on target:\n" "$BOLD" "$RST"
-    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n" "$DIM" "$RST" "$G" "$RST"
+    printf "  %s3.%s Open CR50 console on host:\n"
+    printf "     %sminicom -D /dev/ttyUSB2 -b 115200%s\n\n"
+    printf "  %s4.%s In CR50 console:\n"
+    printf "     %sccd%s             check current state\n"
+    printf "     %sccd open%s        start 5min PP window\n\n"
+    printf "  %s5.%s Press power button on target when CR50 asks.\n\n"
+    printf "  %s6.%s After open:\n"
+    printf "     %swp disable atboot%s    persists across reboots\n"
+    printf "     %swp disable%s           current session only\n\n"
+    printf "  %s7.%s Verify on target:\n"
+    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n"
     sep
     printf "\n"
     warn "CCD open resets on 'ccd lock' or factory reset."
@@ -176,18 +166,18 @@ cr50_ccd_suzyq() {
 cr50_ccd_gsctool() {
     step_header "CR50 - CCD via gsctool"
     printf "  No cable needed. Uses the internal AP to CR50 path.\n\n"
-    printf "  %s1.%s Check state:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -I%s\n\n" "$DIM" "$RST"
-    printf "  %s2.%s Start CCD open:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -o%s\n\n" "$DIM" "$RST"
-    printf "  %s3.%s Press power button when prompted. 5min window.\n" "$BOLD" "$RST"
+    printf "  %s1.%s Check state:\n"
+    printf "     %sgsctool -a -I%s\n\n"
+    printf "  %s2.%s Start CCD open:\n"
+    printf "     %sgsctool -a -o%s\n\n"
+    printf "  %s3.%s Press power button when prompted. 5min window.\n"
     printf "     Device may reboot - that's fine, come back to VT2.\n\n"
-    printf "  %s4.%s Set flags:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -I AllowUnverifiedRo:always%s\n" "$DIM" "$RST"
-    printf "  %s5.%s Kill WP:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -w 0%s\n\n" "$DIM" "$RST"
-    printf "  %s6.%s Verify:\n" "$BOLD" "$RST"
-    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n" "$DIM" "$RST" "$G" "$RST"
+    printf "  %s4.%s Set flags:\n"
+    printf "     %sgsctool -a -I AllowUnverifiedRo:always%s\n"
+    printf "  %s5.%s Kill WP:\n"
+    printf "     %sgsctool -a -w 0%s\n\n"
+    printf "  %s6.%s Verify:\n"
+    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n"
     sep
     printf "\n"
 
@@ -211,7 +201,7 @@ cr50_wp_status() {
     step_header "WP Status"
     _wp=$(check_wp)
     sep
-    printf "  wpsw_cur = %s%s%s\n\n" "$BOLD" "$_wp" "$RST"
+    printf "  wpsw_cur = %s%s%s\n\n"
     if [ "$_wp" = "0" ]; then ok "WP off"; else warn "WP on"; fi
     printf "\n"
     if command -v gsctool >/dev/null 2>&1; then
@@ -247,22 +237,22 @@ ti50_ccd_gsctool() {
     step_header "TI50 - CCD via gsctool"
     printf "  Battery disconnect does NOT work on TI50.\n"
     printf "  CCD open via gsctool is the main path.\n\n"
-    printf "  %s1.%s Confirm TI50:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -v%s   look for dauntless or 0.2.x\n\n" "$DIM" "$RST"
-    printf "  %s2.%s Check state:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -I%s\n\n" "$DIM" "$RST"
-    printf "  %s3.%s Start CCD open:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -o%s\n\n" "$DIM" "$RST"
-    printf "  %s4.%s Press power button as TI50 asks. 5min window.\n" "$BOLD" "$RST"
-    printf "     %sDevice will reboot.%s Come back to VT2 after.\n\n" "$R" "$RST"
-    printf "  %s5.%s Confirm open:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -I%s   look for State: Open\n\n" "$DIM" "$RST"
-    printf "  %s6.%s Set flags:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -I AllowUnverifiedRo:always%s\n" "$DIM" "$RST"
-    printf "  %s7.%s Kill WP:\n" "$BOLD" "$RST"
-    printf "     %sgsctool -a -w 0%s\n\n" "$DIM" "$RST"
-    printf "  %s8.%s Verify:\n" "$BOLD" "$RST"
-    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n" "$DIM" "$RST" "$G" "$RST"
+    printf "  %s1.%s Confirm TI50:\n"
+    printf "     %sgsctool -a -v%s   look for dauntless or 0.2.x\n\n"
+    printf "  %s2.%s Check state:\n"
+    printf "     %sgsctool -a -I%s\n\n"
+    printf "  %s3.%s Start CCD open:\n"
+    printf "     %sgsctool -a -o%s\n\n"
+    printf "  %s4.%s Press power button as TI50 asks. 5min window.\n"
+    printf "     %sDevice will reboot.%s Come back to VT2 after.\n\n"
+    printf "  %s5.%s Confirm open:\n"
+    printf "     %sgsctool -a -I%s   look for State: Open\n\n"
+    printf "  %s6.%s Set flags:\n"
+    printf "     %sgsctool -a -I AllowUnverifiedRo:always%s\n"
+    printf "  %s7.%s Kill WP:\n"
+    printf "     %sgsctool -a -w 0%s\n\n"
+    printf "  %s8.%s Verify:\n"
+    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n" l
     sep
     printf "\n"
 
@@ -275,7 +265,7 @@ ti50_ccd_gsctool() {
         warn "wpsw_cur=${_wp}  WP on"
         printf "\n"
         if confirm "Run gsctool -a -o now?"; then
-            warn "Device will reboot. Re-run ScribbleProtection.sh after."
+            warn "Device will reboot. Re-run ScribbleProtection.postix.sh after."
             gsctool -a -o 2>&1 | while IFS= read -r l; do printf "  %s\n" "$l"; done
         fi
     fi
@@ -287,19 +277,19 @@ ti50_ccd_gsctool() {
 ti50_ccd_suzyq() {
     step_header "TI50 - CCD via SuzyQ"
     printf "  Same cable as CR50. Same port. Connects to Ti50 serial.\n\n"
-    printf "  %s1.%s Plug SuzyQ into the debug USB-C port.\n" "$BOLD" "$RST"
+    printf "  %s1.%s Plug SuzyQ into the debug USB-C port.\n"
     printf "     Check mrchromebox.tech for your board's port location.\n\n"
-    printf "  %s2.%s On host:\n" "$BOLD" "$RST"
-    printf "     %sls /dev/ttyUSB*%s   ttyUSB2 = GSC console\n\n" "$DIM" "$RST"
-    printf "  %s3.%s Connect:\n" "$BOLD" "$RST"
-    printf "     %sminicom -D /dev/ttyUSB2 -b 115200%s\n\n" "$DIM" "$RST"
-    printf "  %s4.%s In TI50 console:\n" "$BOLD" "$RST"
-    printf "     %sccd%s              check state\n" "$DIM" "$RST"
-    printf "     %sccd open%s         start PP window\n\n" "$DIM" "$RST"
-    printf "  %s5.%s Press power button on target when asked.\n\n" "$BOLD" "$RST"
-    printf "  %s6.%s After open:\n" "$BOLD" "$RST"
-    printf "     %swp disable atboot%s\n" "$DIM" "$RST"
-    printf "     %sccd set AllowUnverifiedRo always%s\n" "$DIM" "$RST"
+    printf "  %s2.%s On host:\n"
+    printf "     %sls /dev/ttyUSB*%s   ttyUSB2 = GSC console\n\n"
+    printf "  %s3.%s Connect:\n"
+    printf "     %sminicom -D /dev/ttyUSB2 -b 115200%s\n\n"
+    printf "  %s4.%s In TI50 console:\n"
+    printf "     %sccd%s              check state\n"
+    printf "     %sccd open%s         start PP window\n\n"
+    printf "  %s5.%s Press power button on target when asked.\n\n"
+    printf "  %s6.%s After open:\
+    printf "     %swp disable atboot%s\n"
+    printf "     %sccd set AllowUnverifiedRo always%s\n"
     sep
     printf "\n"
     pause
@@ -310,7 +300,7 @@ ti50_verify() {
     step_header "TI50 - Verify State"
     sep
     _wp=$(check_wp)
-    printf "  wpsw_cur = %s%s%s\n" "$BOLD" "$_wp" "$RST"
+    printf "  wpsw_cur = %s%s%s\n" "$_wp"
     if [ "$_wp" = "0" ]; then ok "WP off"; else warn "WP on"; fi
     printf "\n"
 
@@ -331,7 +321,7 @@ ti50_verify() {
 ti50_vs_cr50() {
     step_header "TI50 vs CR50"
     sep
-    printf "  %-26s %sNO - does not work on TI50%s\n" "Battery disconnect WP" "$R" "$RST"
+    printf "  %-26s %sNO - does not work on TI50%s\n" "Battery disconnect WP"
     printf "  %-26s %s\n" "CCD open"           "same - gsctool -a -o or console"
     printf "  %-26s %s\n" "Physical presence"  "still needed (power button)"
     printf "  %-26s %s\n" "Reboot during open" "TI50 reboots - expected"
