@@ -18,7 +18,7 @@ confirm() {
 }
 
 if [ "$(id -u)" -ne 0 ]; then
-    printf "%snot running as root - privileged commands (gsctool/crossystem) will fail.%s\n"
+    printf "%snot running as root - privileged commands (gsctool/crossystem) will fail.%s\n"k
     printf "%scontinuing anyway so you can browse the walkthrough.%s\n"
     sleep 1
 fi
@@ -82,17 +82,19 @@ numeric_menu() {
 
 # GSC detection and WP read
 detect_gsc() {
-    _r="unknown"
+    local _r="unknown"
     if command -v gsctool >/dev/null 2>&1; then
-        _o=$(gsctool -a -I 2>/dev/null)
-        if [ -n "$_o" ]; then
-            if echo "$_o" | grep -qw 'AllowUnverifiedRo'; then
+        local _v
+        _v=$(gsctool -a -v 2>/dev/null)
+        if [ -n "$_v" ]; then
+            if echo "$_v" | grep -qE 'dauntless|RW.*0\.2\.'; then
                 _r="ti50"
-            else
+            elif echo "$_v" | grep -qE 'RW.*0\.[346]\.'; then
                 _r="cr50"
             fi
         fi
     fi
+
     [ "$_r" = "unknown" ] && ls /dev/ti50* >/dev/null 2>&1 && _r="ti50"
     [ "$_r" = "unknown" ] && ls /dev/cr50* >/dev/null 2>&1 && _r="cr50"
     [ "$_r" = "unknown" ] && [ -d /sys/bus/platform/devices/ti50 ] && _r="ti50"
