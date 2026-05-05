@@ -106,17 +106,17 @@ LOGO
 detect_gsc() {
     local _r="unknown"
     if command -v gsctool >/dev/null 2>&1; then
-        local _o
-        _o=$(gsctool -a -I 2>/dev/null)
-        if [ -n "$_o" ]; then
-            if echo "$_o" | grep -qw 'AllowUnverifiedRo'; then
+        local _v
+        _v=$(gsctool -a -v 2>/dev/null)
+        if [ -n "$_v" ]; then
+            if echo "$_v" | grep -qE 'dauntless|RW.*0\.2\.'; then
                 _r="ti50"
-            else
+            elif echo "$_v" | grep -qE 'RW.*0\.[346]\.'; then
                 _r="cr50"
             fi
         fi
     fi
-    # Sysfs / devnode fallbacks for environments without working gsctool
+# Sysfs / devnode fallbacks for environments without working gsctool
     [ "$_r" = "unknown" ] && ls /dev/ti50* >/dev/null 2>&1 && _r="ti50"
     [ "$_r" = "unknown" ] && ls /dev/cr50* >/dev/null 2>&1 && _r="cr50"
     [ "$_r" = "unknown" ] && [ -d /sys/bus/platform/devices/ti50 ] && _r="ti50"
