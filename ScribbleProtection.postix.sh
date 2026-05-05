@@ -18,7 +18,7 @@ confirm() {
 }
 
 if [ "$(id -u)" -ne 0 ]; then
-    printf "%snot running as root - privileged commands (gsctool/crossystem) will fail.%s\n"k
+    printf "%snot running as root - privileged commands (gsctool/crossystem) will fail.%s\n"
     printf "%scontinuing anyway so you can browse the walkthrough.%s\n"
     sleep 1
 fi
@@ -254,7 +254,7 @@ ti50_ccd_gsctool() {
     printf "  %s7.%s Kill WP:\n"
     printf "     %sgsctool -a -w 0%s\n\n"
     printf "  %s8.%s Verify:\n"
-    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n" l
+    printf "     %scrossystem wpsw_cur%s  ->  %s0%s\n\n"
     sep
     printf "\n"
 
@@ -289,7 +289,7 @@ ti50_ccd_suzyq() {
     printf "     %sccd%s              check state\n"
     printf "     %sccd open%s         start PP window\n\n"
     printf "  %s5.%s Press power button on target when asked.\n\n"
-    printf "  %s6.%s After open:\
+    printf "  %s6.%s After open:\n"
     printf "     %swp disable atboot%s\n"
     printf "     %sccd set AllowUnverifiedRo always%s\n"
     sep
