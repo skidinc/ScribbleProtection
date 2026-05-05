@@ -94,7 +94,7 @@ detect_gsc() {
             fi
         fi
     fi
-
+# Sysfs / devnode fallbacks for environments without working gsctool
     [ "$_r" = "unknown" ] && ls /dev/ti50* >/dev/null 2>&1 && _r="ti50"
     [ "$_r" = "unknown" ] && ls /dev/cr50* >/dev/null 2>&1 && _r="cr50"
     [ "$_r" = "unknown" ] && [ -d /sys/bus/platform/devices/ti50 ] && _r="ti50"
